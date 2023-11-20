@@ -1,0 +1,100 @@
+plugins {
+    id 'com.android.application'
+    id 'org.jetbrains.kotlin.android'
+}
+
+android {
+    namespace 'ru.netology.yandexmaps'
+    compileSdk 34
+
+    defaultConfig {
+        applicationId "ru.netology.yandexmaps"
+        minSdk 24
+        targetSdk 34
+        versionCode 1
+        versionName "1.0"
+
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        vectorDrawables {
+            useSupportLibrary true
+        }
+
+        def properties = new Properties()
+        def file = rootProject.file("maps.properties")
+        if (file.exists()) {
+            properties.load(file.newDataInputStream())
+        }
+
+        manifestPlaceholders.mapsApiKey = properties.getProperty("MAPS_API_KEY", "")
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            manifestPlaceholders.usesCleartextTraffic = false
+            buildConfigField "String", "BASE_URL", '"https://netomedia.ru"'
+        }
+        debug {
+            manifestPlaceholders.usesCleartextTraffic = true
+            buildConfigField "String", "BASE_URL", '"http://10.0.2.2:9999"'
+        }
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
+    }
+    kotlinOptions {
+        jvmTarget = '17'
+    }
+    buildFeatures {
+        viewBinding true
+        buildConfig true
+    }
+
+    packagingOptions {
+        resources {
+            excludes += '/META-INF/{AL2.0,LGPL2.1}'
+        }
+    }
+}
+
+dependencies {
+    def junit_version = "4.13.2"
+    def ext_junit_version = "1.1.5"
+    def espresso_core_version = "3.5.1"
+    def maps_version = '18.2.0'
+    def location_version = "21.0.1"
+    def maps_ktx_version = '5.0.0'
+    def android_navigation = "2.7.5"
+    def room_version = "2.6.0"
+    def lifecycle_runtime_version = "2.6.2"
+
+    implementation fileTree(dir: "libs", include: ["*.jar"])
+    implementation 'androidx.core:core-ktx:1.12.0'
+    implementation 'androidx.appcompat:appcompat:1.6.1'
+    implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
+    implementation 'com.google.android.material:material:1.10.0'
+
+    implementation 'androidx.activity:activity-ktx:1.8.0'
+
+    implementation 'androidx.fragment:fragment-ktx:1.6.2'
+    implementation "androidx.navigation:navigation-fragment-ktx:$android_navigation"
+    implementation "androidx.navigation:navigation-ui-ktx:$android_navigation"
+
+    implementation "com.google.android.gms:play-services-location:$location_version"
+    implementation "com.google.android.gms:play-services-maps:$maps_version"
+    implementation "com.google.maps.android:maps-ktx:$maps_ktx_version"
+    implementation "com.google.maps.android:maps-utils-ktx:$maps_ktx_version"
+    implementation "androidx.lifecycle:lifecycle-runtime-ktx:$lifecycle_runtime_version"
+
+    testImplementation "junit:junit:$junit_version"
+    androidTestImplementation "androidx.test.ext:junit:$ext_junit_version"
+    androidTestImplementation "androidx.test.espresso:espresso-core:$espresso_core_version"
+
+
+    implementation "androidx.room:room-common:$room_version"
+    implementation "androidx.room:room-runtime:$room_version"
+    implementation "androidx.room:room-ktx:$room_version"
+}
