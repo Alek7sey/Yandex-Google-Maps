@@ -1,6 +1,7 @@
 plugins {
     id 'com.android.application'
     id 'org.jetbrains.kotlin.android'
+    id 'org.jetbrains.kotlin.kapt'
 }
 
 android {
@@ -25,7 +26,8 @@ android {
             properties.load(file.newDataInputStream())
         }
 
-        manifestPlaceholders.mapsApiKey = properties.getProperty("MAPS_API_KEY", "")
+       // manifestPlaceholders.mapsApiKey = properties.getProperty("MAPS_API_KEY", "")
+        buildConfigField "String", "MAPS_API_KEY", properties.getProperty("MAPS_API_KEY", "")
     }
 
     buildTypes {
@@ -69,7 +71,7 @@ dependencies {
     def maps_ktx_version = '5.0.0'
     def android_navigation = "2.7.5"
     def room_version = "2.6.0"
-    def lifecycle_runtime_version = "2.6.2"
+    def lifecycle_version = "2.6.2"
 
     implementation fileTree(dir: "libs", include: ["*.jar"])
     implementation 'androidx.core:core-ktx:1.12.0'
@@ -87,14 +89,15 @@ dependencies {
     implementation "com.google.android.gms:play-services-maps:$maps_version"
     implementation "com.google.maps.android:maps-ktx:$maps_ktx_version"
     implementation "com.google.maps.android:maps-utils-ktx:$maps_ktx_version"
-    implementation "androidx.lifecycle:lifecycle-runtime-ktx:$lifecycle_runtime_version"
+    implementation 'com.yandex.android:maps.mobile:4.4.0-lite'
+    implementation "androidx.lifecycle:lifecycle-runtime-ktx:$lifecycle_version"
+    implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:$lifecycle_version"
 
     testImplementation "junit:junit:$junit_version"
     androidTestImplementation "androidx.test.ext:junit:$ext_junit_version"
     androidTestImplementation "androidx.test.espresso:espresso-core:$espresso_core_version"
 
-
-    implementation "androidx.room:room-common:$room_version"
     implementation "androidx.room:room-runtime:$room_version"
+    kapt "androidx.room:room-compiler:$room_version"
     implementation "androidx.room:room-ktx:$room_version"
 }
