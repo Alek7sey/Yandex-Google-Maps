@@ -36,7 +36,7 @@ import ru.netology.yandexmaps.viewmodel.PlaceMarkViewModel
 class MapsFragment : Fragment() {
     private var mapView: MapView? = null
     private lateinit var userLocation: UserLocationLayer
-    private var map: Map? = null
+   // private var map: Map? = null
 
     private val listener = object : InputListener {
         override fun onMapTap(map: Map, point: Point) = Unit
@@ -97,9 +97,19 @@ class MapsFragment : Fragment() {
         }
 
         val mapWindow = binding.map.mapWindow
-        val map_ = mapWindow?.map
+        val map = mapWindow.map
 
-        map_?.move(START_POSITION, START_ANIMATION, null)
+        map.move(START_POSITION, START_ANIMATION, null)
+
+        fun changeZoomByStep(value: Float) {
+            with(map.cameraPosition) {
+                map.move(
+                    CameraPosition(this.target, zoom + value, azimuth, tilt),
+                    SMOOTH_ANIMATION,
+                    null,
+                )
+            }
+        }
 
         binding.apply {
             btnPlus.setOnClickListener {
@@ -108,6 +118,7 @@ class MapsFragment : Fragment() {
             btnMinus.setOnClickListener {
                 changeZoomByStep(-ZOOM_STEP)
             }
+
 //            btnFocusGeometry.setOnClickListener {
 //                val geometry = Geometry.fromPolyline(polyline)
 //                val position = map.cameraPosition(geometry)
@@ -150,12 +161,12 @@ class MapsFragment : Fragment() {
             arguments.containsKey(LATITUDE) &&
             arguments.containsKey(LONGITUDE)
         ) {
-            val cameraPosition = map?.cameraPosition
-            map?.move(
+            val cameraPosition = map.cameraPosition
+            map.move(
                 CameraPosition(
                     Point(arguments.getDouble(LATITUDE), arguments.getDouble(LONGITUDE)),
                     10F,
-                    cameraPosition!!.azimuth,
+                    cameraPosition.azimuth,
                     cameraPosition.tilt,
                 )
             )
@@ -170,8 +181,6 @@ class MapsFragment : Fragment() {
                 R.id.action_mapsFragment_to_placeMarksFragment
             )
         }
-
-        binding
 
         return binding.root
     }
@@ -193,15 +202,7 @@ class MapsFragment : Fragment() {
         mapView = null
     }
 
-    private fun changeZoomByStep(value: Float) {
-        with(map?.cameraPosition) {
-            map?.move(
-                CameraPosition(this!!.target, zoom + value, azimuth, tilt),
-                SMOOTH_ANIMATION,
-                null,
-            )
-        }
-    }
+
 
 //    val requestPermissionLauncher = registerForActivityResult(ActivityResultContracts.RequestPermission()) { granted ->
 //        when {
@@ -238,7 +239,6 @@ class MapsFragment : Fragment() {
         private val START_POSITION = CameraPosition(Point(54.707590, 20.508898), 15f, 0f, 0f)
         const val LATITUDE = "LATITUDE"
         const val LONGITUDE = "LONGITUDE"
-        const val TITLE = "TITLE"
         private val haveApiKey = "haveApiKey"
     }
 }
