@@ -27,7 +27,6 @@ import com.yandex.mapkit.user_location.UserLocationView
 import com.yandex.runtime.ui_view.ViewProvider
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
-import ru.netology.yandexmaps.BuildConfig
 import ru.netology.yandexmaps.R
 import ru.netology.yandexmaps.databinding.FragmentMapsBinding
 import ru.netology.yandexmaps.databinding.PlacemarkItemBinding
@@ -36,7 +35,6 @@ import ru.netology.yandexmaps.viewmodel.PlaceMarkViewModel
 class MapsFragment : Fragment() {
     private var mapView: MapView? = null
     private lateinit var userLocation: UserLocationLayer
-   // private var map: Map? = null
 
     private val listener = object : InputListener {
         override fun onMapTap(map: Map, point: Point) = Unit
@@ -66,21 +64,21 @@ class MapsFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setApiKey(savedInstanceState) // Проверяем: был ли уже ранее установлен API-ключ в приложении. Если нет - устанавливаем его.
+        //   setApiKey(savedInstanceState) // Проверяем: был ли уже ранее установлен API-ключ в приложении. Если нет - устанавливаем его.
         MapKitFactory.initialize(requireContext())
     }
 
-    private fun setApiKey(savedInstanceState: Bundle?) {
-        val haveApiKey = savedInstanceState?.getBoolean(haveApiKey) ?: false // При первом запуске приложения всегда false
-        if (!haveApiKey) {
-            MapKitFactory.setApiKey(BuildConfig.MAPS_API_KEY) // API-ключ должен быть задан единожды перед инициализацией MapKitFactory
-        }
-    }
+//    private fun setApiKey(savedInstanceState: Bundle?) {
+//        val haveApiKey = savedInstanceState?.getBoolean(haveApiKey) ?: false // При первом запуске приложения всегда false
+//        if (!haveApiKey) {
+//            MapKitFactory.setApiKey(BuildConfig.MAPS_API_KEY) // API-ключ должен быть задан единожды перед инициализацией MapKitFactory
+//        }
+//    }
 
-    override fun onSaveInstanceState(outState: Bundle) {
-        super.onSaveInstanceState(outState)
-        outState.putBoolean(haveApiKey, true)
-    }
+//    override fun onSaveInstanceState(outState: Bundle) {
+//        super.onSaveInstanceState(outState)
+//        outState.putBoolean(haveApiKey, true)
+//    }
 
     private val viewModel by viewModels<PlaceMarkViewModel>()
 
@@ -92,7 +90,7 @@ class MapsFragment : Fragment() {
         val binding = FragmentMapsBinding.inflate(layoutInflater, container, false)
 
         val placemarkTapListener = MapObjectTapListener { _, point ->
-            Toast.makeText(requireContext(), "${point.longitude}, ${point.latitude})", Toast.LENGTH_SHORT).show()
+            Toast.makeText(requireContext(), "Tapped the point (${point.longitude}, ${point.latitude})", Toast.LENGTH_SHORT).show()
             true
         }
 
@@ -118,12 +116,6 @@ class MapsFragment : Fragment() {
             btnMinus.setOnClickListener {
                 changeZoomByStep(-ZOOM_STEP)
             }
-
-//            btnFocusGeometry.setOnClickListener {
-//                val geometry = Geometry.fromPolyline(polyline)
-//                val position = map.cameraPosition(geometry)
-//                map.move(position, SMOOTH_ANIMATION, null)
-//            }
         }
 
         mapView = binding.map.apply {
@@ -165,7 +157,7 @@ class MapsFragment : Fragment() {
             map.move(
                 CameraPosition(
                     Point(arguments.getDouble(LATITUDE), arguments.getDouble(LONGITUDE)),
-                    10F,
+                    15F,
                     cameraPosition.azimuth,
                     cameraPosition.tilt,
                 )
@@ -202,36 +194,6 @@ class MapsFragment : Fragment() {
         mapView = null
     }
 
-
-
-//    val requestPermissionLauncher = registerForActivityResult(ActivityResultContracts.RequestPermission()) { granted ->
-//        when {
-//            granted -> {
-//                MapKitFactory.getInstance().resetLocationManagerToDefault()
-//                userLocation.cameraPosition()?.target?.also {
-//                    val map = mapView?.map ?: return@registerForActivityResult
-//                    val cameraPosition = map.cameraPosition
-//                    map.move(
-//                        CameraPosition(
-//                            it,
-//                            cameraPosition.zoom,
-//                            cameraPosition.azimuth,
-//                            cameraPosition.tilt,
-//                        )
-//                    )
-//                }
-//            }
-//
-//            else -> {
-//                Toast.makeText(
-//                    requireContext(),
-//                    getString(R.string.location_permission),
-//                    Toast.LENGTH_LONG
-//                ).show()
-//            }
-//        }
-//    }
-
     companion object {
         private const val ZOOM_STEP = 1f
         private val START_ANIMATION = Animation(Animation.Type.LINEAR, 3f)
@@ -239,6 +201,5 @@ class MapsFragment : Fragment() {
         private val START_POSITION = CameraPosition(Point(54.707590, 20.508898), 15f, 0f, 0f)
         const val LATITUDE = "LATITUDE"
         const val LONGITUDE = "LONGITUDE"
-        private val haveApiKey = "haveApiKey"
     }
 }

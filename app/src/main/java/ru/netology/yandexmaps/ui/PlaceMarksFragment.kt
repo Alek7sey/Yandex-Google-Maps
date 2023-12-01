@@ -35,7 +35,6 @@ class PlaceMarksFragment : Fragment() {
         val adapter = PlaceMarkAdapter(object : OnInteractionListener {
 
             override fun onClick(placemark: PlaceMark) {
-         //       MapKitFactory.getInstance().setApiKey(null.toString())
                 findNavController().navigate(
                     R.id.action_placeMarksFragment_to_mapsFragment, bundleOf(
                         LATITUDE to placemark.latitude,
