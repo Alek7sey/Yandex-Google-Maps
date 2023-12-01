@@ -53,7 +53,7 @@ class PlaceMarksFragment : Fragment() {
                         AddPlaceMarkFragment.ID to placemark.id,
                         AddPlaceMarkFragment.TITLE to placemark.title,
                         AddPlaceMarkFragment.LATITUDE to placemark.latitude,
-                        AddPlaceMarkFragment.LATITUDE to placemark.latitude,
+                        AddPlaceMarkFragment.LONGITUDE to placemark.longitude,
                         )
                 )
             }
